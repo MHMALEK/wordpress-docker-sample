@@ -29,12 +29,9 @@ RUN { \
 
 RUN a2enmod rewrite expires
 
-ENV WORDPRESS_VERSION 4.8
-ENV WORDPRESS_SHA1 3738189a1f37a03fb9cb087160b457d7a641ccb4
-
+ENV WORDPRESS_VERSION 5.1
 RUN set -ex; \
-	curl -o wordpress.tar.gz -fSL "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz"; \
-	echo "$WORDPRESS_SHA1 *wordpress.tar.gz" | sha1sum -c -; \
+	curl -o wordpress.tar.gz -fSL "https://fa.wordpress.org/wordpress-${WORDPRESS_VERSION}-fa_IR.tar.gz"; \
 # upstream tarballs include ./wordpress/ so this gives us /usr/src/wordpress
 	tar -xzf wordpress.tar.gz -C /usr/src/; \
 	rm wordpress.tar.gz; \
@@ -49,10 +46,10 @@ RUN sed -i "/Listen 80/c Listen 8080"                     /etc/apache2/ports.con
 EXPOSE 8080
 
 RUN touch .htaccess wp-config.php && \
-    chown -R 1001:0 /var/www/html /var/lock/ /var/run/ .htaccess wp-config.php && \
+    chown -R root:0 /var/www/html /var/lock/ /var/run/ .htaccess wp-config.php && \
     chmod -R g+w /var/www/html /var/lock/ /var/run/ .htaccess wp-config.php
 
-USER 1001
+USER root
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["apache2-foreground"]
